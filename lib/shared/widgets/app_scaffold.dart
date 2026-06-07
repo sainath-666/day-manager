@@ -229,8 +229,8 @@ class _PillNavItem extends StatelessWidget {
           duration: const Duration(milliseconds: 260),
           curve: Curves.easeOutCubic,
           height: 52,
-          padding: EdgeInsets.symmetric(
-            horizontal: selected ? 12 : 4,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
           ),
           decoration: BoxDecoration(
             gradient: selected
@@ -257,6 +257,7 @@ class _PillNavItem extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (selected) const SizedBox(width: 8),
               AnimatedScale(
                 scale: selected ? 1.08 : 1,
                 duration: const Duration(milliseconds: 220),
@@ -270,7 +271,10 @@ class _PillNavItem extends StatelessWidget {
               if (selected)
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 6),
+                    padding: const EdgeInsetsDirectional.only(
+                      start: 6,
+                      end: 8,
+                    ),
                     child: Text(
                       data.label,
                       maxLines: 1,
