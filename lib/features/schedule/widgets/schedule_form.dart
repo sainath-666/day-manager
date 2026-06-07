@@ -9,11 +9,13 @@ class ScheduleForm extends StatefulWidget {
   const ScheduleForm({
     super.key,
     this.entry,
+    this.initialDate,
     required this.onSave,
     this.onDelete,
   });
 
   final ScheduleEntry? entry;
+  final DateTime? initialDate;
   final ValueChanged<ScheduleEntry> onSave;
   final VoidCallback? onDelete;
 
@@ -95,7 +97,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       widget.onSave(ScheduleEntry.create(
         title: _titleController.text.trim(),
         notes: _notesController.text.trim(),
-        date: widget.entry?.date ?? DateTime.now(),
+        date: widget.initialDate ?? DateTime.now(),
         startTime: _startTime,
         endTime: _endTime,
         repeatMode: _repeatMode.value,

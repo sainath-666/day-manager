@@ -3,6 +3,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../core/theme/color_scheme.dart';
 
+class UserProfile {
+  const UserProfile({
+    required this.name,
+    required this.role,
+    required this.email,
+  });
+
+  final String name;
+  final String role;
+  final String email;
+
+  UserProfile copyWith({
+    String? name,
+    String? role,
+    String? email,
+  }) {
+    return UserProfile(
+      name: name ?? this.name,
+      role: role ?? this.role,
+      email: email ?? this.email,
+    );
+  }
+}
+
 /// Persisted user-selected accent seed color.
 class SeedColorNotifier extends Notifier<Color> {
   Box get _box => Hive.box('settings');
@@ -48,6 +72,35 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
 }
 
 final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
+
+class UserProfileNotifier extends Notifier<UserProfile> {
+  Box get _box => Hive.box('settings');
+
+  @override
+  UserProfile build() {
+    return UserProfile(
+      name: (_box.get('profile_name', defaultValue: 'Rahul') as String).trim(),
+      role: (_box.get('profile_role', defaultValue: 'Personal workspace') as String).trim(),
+      email: (_box.get('profile_email', defaultValue: 'rahul@example.com') as String).trim(),
+    );
+  }
+
+  void save(UserProfile profile) {
+    final clean = UserProfile(
+      name: profile.name.trim().isEmpty ? 'Rahul' : profile.name.trim(),
+      role: profile.role.trim().isEmpty ? 'Personal workspace' : profile.role.trim(),
+      email: profile.email.trim().isEmpty ? 'rahul@example.com' : profile.email.trim(),
+    );
+    state = clean;
+    _box
+      ..put('profile_name', clean.name)
+      ..put('profile_role', clean.role)
+      ..put('profile_email', clean.email);
+  }
+}
+
+final userProfileProvider =
+    NotifierProvider<UserProfileNotifier, UserProfile>(UserProfileNotifier.new);
 
 /// Persisted onboarding completion status.
 class OnboardingNotifier extends Notifier<bool> {

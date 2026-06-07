@@ -8,6 +8,7 @@ import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../providers/analytics_providers.dart';
 import '../../providers/expense_providers.dart';
+import '../../providers/settings_providers.dart';
 import '../../providers/task_providers.dart';
 import '../../shared/widgets/loading_skeleton.dart';
 import 'widgets/quick_add_fab.dart';
@@ -34,12 +35,13 @@ class HomeScreen extends ConsumerWidget {
     final upcoming = ref.watch(upcomingRemindersProvider);
     final currentSpend = ref.watch(currentMonthSpendProvider);
     final lastSpend = ref.watch(lastMonthSpendProvider);
+    final profile = ref.watch(userProfileProvider);
 
     final dateStr = DateFormat('EEEE, MMMM d').format(DateTime.now());
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DailyFlow', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: -0.5)),
+        title: const Text('DailyFlow', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 0)),
         actions: [
           IconButton(
             icon: const Icon(Icons.bar_chart),
@@ -91,11 +93,11 @@ class HomeScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${_greeting()}, Rahul',
+                            '${_greeting()}, ${profile.name}',
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                   fontWeight: FontWeight.w900,
                                   color: Theme.of(context).colorScheme.onSurface,
-                                  letterSpacing: -0.75,
+                                  letterSpacing: 0,
                                 ),
                           ),
                           const SizedBox(height: 4),
@@ -280,7 +282,7 @@ class _ActionBtn extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
-                    letterSpacing: -0.2,
+                    letterSpacing: 0,
                   ),
                 ),
               ],

@@ -34,7 +34,8 @@ abstract final class AppTheme {
     final Color outline;
 
     // Check seed color values
-    if (seedColor.value == 0xFF6366F1) {
+    final seedValue = seedColor.toARGB32();
+    if (seedValue == 0xFF6366F1) {
       // Voyager Neon (Indigo)
       if (isDark) {
         primary = const Color(0xFF818CF8);
@@ -61,7 +62,7 @@ abstract final class AppTheme {
         outlineVariant = const Color(0xFFE4E4E7);
         outline = const Color(0xFFA1A1AA);
       }
-    } else if (seedColor.value == 0xFFE07A5F) {
+    } else if (seedValue == 0xFFE07A5F) {
       // Ethereal Rose (Rose Gold)
       if (isDark) {
         primary = const Color(0xFFF4A261);
@@ -88,7 +89,7 @@ abstract final class AppTheme {
         outlineVariant = const Color(0xFFE3DFCE);
         outline = const Color(0xFFBDB2A6);
       }
-    } else if (seedColor.value == 0xFF0D9488) {
+    } else if (seedValue == 0xFF0D9488) {
       // Arctic Glacier (Teal)
       if (isDark) {
         primary = const Color(0xFF14B8A6);
@@ -115,7 +116,7 @@ abstract final class AppTheme {
         outlineVariant = const Color(0xFFE2E8F0);
         outline = const Color(0xFF94A3B8);
       }
-    } else if (seedColor.value == 0xFF4E6E58) {
+    } else if (seedValue == 0xFF4E6E58) {
       // Eucalyptus Sage (Sage)
       if (isDark) {
         primary = const Color(0xFF7CA982);
@@ -204,18 +205,18 @@ abstract final class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
       textTheme: const TextTheme(
-        headlineLarge: TextStyle(fontWeight: FontWeight.w900, letterSpacing: -1.0),
-        headlineMedium: TextStyle(fontWeight: FontWeight.w800, letterSpacing: -0.75),
-        headlineSmall: TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.5),
-        titleLarge: TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.5),
+        headlineLarge: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 0),
+        headlineMedium: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0),
+        headlineSmall: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0),
+        titleLarge: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0),
         titleMedium: TextStyle(fontWeight: FontWeight.bold),
         titleSmall: TextStyle(fontWeight: FontWeight.bold),
         bodyLarge: TextStyle(fontSize: 15, height: 1.45),
         bodyMedium: TextStyle(fontSize: 14, height: 1.4),
         bodySmall: TextStyle(fontSize: 12, height: 1.3),
-        labelLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 0.5),
-        labelMedium: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
-        labelSmall: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, letterSpacing: 0.5),
+        labelLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 0),
+        labelMedium: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0),
+        labelSmall: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, letterSpacing: 0),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
@@ -298,7 +299,7 @@ abstract final class AppTheme {
           color: colorScheme.onSurface,
           fontSize: 20,
           fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
+          letterSpacing: 0,
         ),
       ),
       tabBarTheme: TabBarThemeData(

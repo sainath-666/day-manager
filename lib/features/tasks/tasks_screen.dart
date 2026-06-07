@@ -562,6 +562,7 @@ class _TaskListState extends State<_TaskList> {
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 132),
       itemCount: listItems.length,
       itemBuilder: (_, index) => listItems[index],
     );

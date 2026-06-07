@@ -78,10 +78,10 @@ class WeekStrip extends ConsumerWidget {
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: isSelected
                                 ? Colors.white.withValues(alpha: 0.85)
-                                : colorScheme.onSurfaceVariant,
+                            : colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
-                            letterSpacing: 0.6,
+                            letterSpacing: 0,
                           ),
                     ),
                     const SizedBox(height: 5),

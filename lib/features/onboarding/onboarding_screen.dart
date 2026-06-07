@@ -147,7 +147,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 slide.title,
                                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      letterSpacing: -0.5,
+                                      letterSpacing: 0,
                                     ),
                                 textAlign: TextAlign.center,
                               ).animate(key: ValueKey('title_$index')).fadeIn(delay: 100.ms).slideY(

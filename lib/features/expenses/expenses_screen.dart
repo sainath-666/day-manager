@@ -333,6 +333,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                 child: filteredExpenses.isEmpty
                     ? const EmptyState(message: AppStrings.noExpenses)
                     : ListView(
+                        padding: const EdgeInsets.only(bottom: 132),
                         children: grouped.entries.expand((entry) {
                           return [
                             Padding(

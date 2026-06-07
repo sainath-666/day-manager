@@ -10,6 +10,7 @@ import '../../features/home/home_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/schedule/schedule_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/tasks/task_create_screen.dart';
 import '../../features/tasks/task_detail_screen.dart';
 import '../../features/tasks/tasks_screen.dart';
 import '../../providers/settings_providers.dart';
@@ -53,6 +54,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: '/tasks',
             builder: (_, __) => const TasksScreen(),
             routes: [
+              GoRoute(
+                path: 'new',
+                builder: (_, __) => const TaskCreateScreen(),
+              ),
               GoRoute(
                 path: ':id',
                 builder: (_, state) => TaskDetailScreen(

@@ -21,7 +21,7 @@ class ScheduleScreen extends ConsumerWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (ctx) => Padding(
+      builder: (ctx) => SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 16,
           right: 16,
@@ -29,12 +29,7 @@ class ScheduleScreen extends ConsumerWidget {
           bottom: MediaQuery.viewInsetsOf(ctx).bottom + 16,
         ),
         child: ScheduleForm(
-          entry: ScheduleEntry.create(
-            title: '',
-            date: date,
-            startTime: '09:00',
-            endTime: '10:00',
-          ),
+          initialDate: date,
           onSave: (entry) async {
             await ref.read(scheduleNotifierProvider.notifier).add(entry);
             if (ctx.mounted) Navigator.pop(ctx);
@@ -66,6 +61,10 @@ class ScheduleScreen extends ConsumerWidget {
             padding: EdgeInsets.all(8),
             child: WeekStrip(),
           ),
+          _ScheduleDaySummary(
+            selectedDate: selectedDate,
+            entries: dayEntries,
+          ),
           Expanded(
             child: scheduleAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -74,11 +73,98 @@ class ScheduleScreen extends ConsumerWidget {
                 onRetry: () => ref.invalidate(scheduleNotifierProvider),
               ),
               data: (_) => dayEntries.isEmpty
-                  ? const EmptyState(message: AppStrings.noSchedule)
+                  ? EmptyState(
+                      message: AppStrings.noSchedule,
+                      icon: Icons.event_available_outlined,
+                      actionLabel: AppStrings.addSchedule,
+                      onAction: () => _showAddSheet(context, ref),
+                    )
                   : TimelineView(entries: dayEntries),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ScheduleDaySummary extends StatelessWidget {
+  const _ScheduleDaySummary({
+    required this.selectedDate,
+    required this.entries,
+  });
+
+  final DateTime selectedDate;
+  final List<ScheduleEntry> entries;
+
+  int _minutesFor(ScheduleEntry entry) {
+    final start = entry.startTime.split(':');
+    final end = entry.endTime.split(':');
+    final startMin = int.parse(start[0]) * 60 + int.parse(start[1]);
+    final endMin = int.parse(end[0]) * 60 + int.parse(end[1]);
+    return (endMin - startMin).clamp(0, 24 * 60);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final totalMinutes = entries.fold<int>(0, (sum, e) => sum + _minutesFor(e));
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    final timeLabel = totalMinutes == 0
+        ? 'Open day'
+        : hours == 0
+            ? '$minutes min planned'
+            : minutes == 0
+                ? '$hours hr planned'
+                : '$hours hr $minutes min planned';
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.calendar_today_outlined, color: colorScheme.primary),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat('EEEE, MMMM d').format(selectedDate),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${entries.length} meetings/events - $timeLabel',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

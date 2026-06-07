@@ -70,10 +70,14 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Header Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              spacing: AppSizes.sm,
+              runSpacing: AppSizes.sm,
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8),
@@ -114,7 +118,9 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                   ],
                 ),
                 // Compact Filters
-                Row(
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
                   children: [
                     _FilterTab(
                       label: 'Active',
@@ -122,14 +128,12 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                       count: pendingTodos.length,
                       onTap: () => setState(() => _filter = 'pending'),
                     ),
-                    const SizedBox(width: 4),
                     _FilterTab(
                       label: 'Done',
                       selected: _filter == 'completed',
                       count: completedTodos.length,
                       onTap: () => setState(() => _filter = 'completed'),
                     ),
-                    const SizedBox(width: 4),
                     _FilterTab(
                       label: 'All',
                       selected: _filter == 'all',
