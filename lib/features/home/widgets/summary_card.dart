@@ -36,8 +36,8 @@ class SummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 16,
+            color: colorScheme.primary.withValues(alpha: 0.28),
+            blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
@@ -49,25 +49,38 @@ class SummaryCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.auto_awesome, color: Colors.white),
+                const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
                 const SizedBox(width: AppSizes.sm),
                 Text(
-                  AppStrings.todaysProgress,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  AppStrings.todaysProgress.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
                       ),
                 ),
               ],
             ),
             const SizedBox(height: AppSizes.lg),
-            LinearProgressIndicator(
-              value: completionRate,
-              minHeight: 12,
-              color: Colors.white,
-              backgroundColor: Colors.white24,
-              borderRadius: BorderRadius.circular(999),
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: LinearProgressIndicator(
+                  value: completionRate,
+                  minHeight: 10,
+                  color: Colors.white,
+                  backgroundColor: Colors.white24,
+                ),
+              ),
             ).animate().fadeIn(duration: 450.ms).scale(duration: 350.ms, curve: Curves.easeOut),
             const SizedBox(height: AppSizes.md),
             Row(
@@ -78,13 +91,15 @@ class SummaryCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
                       ),
                 ),
                 Text(
                   '${(completionRate * 100).toStringAsFixed(0)}%',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
                       ),
                 ),
               ],
@@ -117,8 +132,8 @@ class SpendSummaryCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             colorScheme.tertiary,
-            colorScheme.tertiary.withValues(alpha: 0.85),
-            colorScheme.primaryContainer.withValues(alpha: 0.3),
+            colorScheme.tertiary.withValues(alpha: 0.8),
+            colorScheme.secondary.withValues(alpha: 0.75),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -126,8 +141,8 @@ class SpendSummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.tertiary.withValues(alpha: 0.2),
-            blurRadius: 16,
+            color: colorScheme.tertiary.withValues(alpha: 0.25),
+            blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
@@ -140,14 +155,14 @@ class SpendSummaryCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.account_balance_wallet_outlined,
-                    color: Colors.white),
+                    color: Colors.white, size: 20),
                 const SizedBox(width: AppSizes.sm),
                 Text(
-                  AppStrings.thisMonthsSpend,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  AppStrings.thisMonthsSpend.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
                       ),
                 ),
               ],
@@ -167,23 +182,28 @@ class SpendSummaryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: trend ? const Color(0xFF10B981).withValues(alpha: 0.3) : Colors.red.withValues(alpha: 0.3),
+                    color: (trend ? const Color(0xFF10B981) : const Color(0xFFEF4444)).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: (trend ? const Color(0xFF10B981) : const Color(0xFFEF4444)).withValues(alpha: 0.45),
+                      width: 1.0,
+                    ),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         trend ? Icons.trending_down : Icons.trending_up,
-                        color: trend ? Colors.greenAccent : Colors.redAccent,
-                        size: 16,
+                        color: trend ? const Color(0xFF34D399) : const Color(0xFFFCA5A5),
+                        size: 14,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         trend ? 'Savings' : 'Overspend',
                         style: TextStyle(
-                          color: trend ? Colors.greenAccent : Colors.redAccent,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          color: trend ? const Color(0xFF34D399) : const Color(0xFFFCA5A5),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 10,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ],
@@ -191,11 +211,12 @@ class SpendSummaryCard extends StatelessWidget {
                 ).animate().scale(duration: 400.ms, delay: 200.ms, curve: Curves.easeOutBack),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(
               '${AppStrings.vsLastMonth}: ${lastSpend.toCurrency()}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.75),
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.w600,
                   ),
             ),
           ],

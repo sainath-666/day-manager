@@ -20,36 +20,211 @@ abstract final class AppTheme {
   }) {
     final isDark = brightness == Brightness.dark;
 
-    // Create base scheme from seed
-    final baseScheme = ColorScheme.fromSeed(
-      seedColor: seedColor,
-      brightness: brightness,
-    );
+    // Select custom hand-crafted palette depending on selected seed color
+    final Color primary;
+    final Color secondary;
+    final Color tertiary;
+    final Color surface;
+    final Color surfaceContainerLow;
+    final Color surfaceContainer;
+    final Color surfaceContainerHigh;
+    final Color onSurface;
+    final Color onSurfaceVariant;
+    final Color outlineVariant;
+    final Color outline;
 
-    // Custom obsidian/slate layout colors to override muddy M3 defaults
-    final colorScheme = baseScheme.copyWith(
-      surface: isDark ? const Color(0xFF090D16) : const Color(0xFFF8FAFC), // Obsidian space-black vs Slate-50
-      surfaceContainerLow: isDark ? const Color(0xFF111726) : const Color(0xFFFFFFFF), // Dark deep card vs Pure White
-      surfaceContainer: isDark ? const Color(0xFF151D30) : const Color(0xFFF1F5F9), // Scaffold surfaces
-      surfaceContainerHigh: isDark ? const Color(0xFF1F2C47) : const Color(0xFFE2E8F0),
-      onSurface: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A), // Pure white vs Charcoal
-      onSurfaceVariant: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569), // Ice grey vs Slate-600
-      outlineVariant: isDark ? const Color(0xFF1F2C47) : const Color(0xFFE2E8F0), // Borders
-      outline: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+    // Check seed color values
+    if (seedColor.value == 0xFF6366F1) {
+      // Voyager Neon (Indigo)
+      if (isDark) {
+        primary = const Color(0xFF818CF8);
+        secondary = const Color(0xFF2DD4BF);
+        tertiary = const Color(0xFFA78BFA);
+        surface = const Color(0xFF070A11);
+        surfaceContainerLow = const Color(0xFF0F1524);
+        surfaceContainer = const Color(0xFF161E33);
+        surfaceContainerHigh = const Color(0xFF222E4D);
+        onSurface = const Color(0xFFF4F4F5);
+        onSurfaceVariant = const Color(0xFFA1A1AA);
+        outlineVariant = const Color(0xFF1E293B);
+        outline = const Color(0xFF475569);
+      } else {
+        primary = const Color(0xFF6366F1);
+        secondary = const Color(0xFF14B8A6);
+        tertiary = const Color(0xFF8B5CF6);
+        surface = const Color(0xFFFAFAFA);
+        surfaceContainerLow = const Color(0xFFFFFFFF);
+        surfaceContainer = const Color(0xFFF4F4F5);
+        surfaceContainerHigh = const Color(0xFFE4E4E7);
+        onSurface = const Color(0xFF18181B);
+        onSurfaceVariant = const Color(0xFF71717A);
+        outlineVariant = const Color(0xFFE4E4E7);
+        outline = const Color(0xFFA1A1AA);
+      }
+    } else if (seedColor.value == 0xFFE07A5F) {
+      // Ethereal Rose (Rose Gold)
+      if (isDark) {
+        primary = const Color(0xFFF4A261);
+        secondary = const Color(0xFFE76F51);
+        tertiary = const Color(0xFF2A9D8F);
+        surface = const Color(0xFF0F0D0E);
+        surfaceContainerLow = const Color(0xFF1A1719);
+        surfaceContainer = const Color(0xFF242022);
+        surfaceContainerHigh = const Color(0xFF363033);
+        onSurface = const Color(0xFFF4F1DE);
+        onSurfaceVariant = const Color(0xFFB7B7A4);
+        outlineVariant = const Color(0xFF2E292B);
+        outline = const Color(0xFF5C5449);
+      } else {
+        primary = const Color(0xFFE07A5F);
+        secondary = const Color(0xFF3D405B);
+        tertiary = const Color(0xFF81B29A);
+        surface = const Color(0xFFFAF9F6);
+        surfaceContainerLow = const Color(0xFFFFFFFF);
+        surfaceContainer = const Color(0xFFF4F1DE);
+        surfaceContainerHigh = const Color(0xFFE3DFCE);
+        onSurface = const Color(0xFF2B2D42);
+        onSurfaceVariant = const Color(0xFF6C757D);
+        outlineVariant = const Color(0xFFE3DFCE);
+        outline = const Color(0xFFBDB2A6);
+      }
+    } else if (seedColor.value == 0xFF0D9488) {
+      // Arctic Glacier (Teal)
+      if (isDark) {
+        primary = const Color(0xFF14B8A6);
+        secondary = const Color(0xFF3B82F6);
+        tertiary = const Color(0xFF38BDF8);
+        surface = const Color(0xFF090F16);
+        surfaceContainerLow = const Color(0xFF0F1824);
+        surfaceContainer = const Color(0xFF162233);
+        surfaceContainerHigh = const Color(0xFF24354F);
+        onSurface = const Color(0xFFF8FAFC);
+        onSurfaceVariant = const Color(0xFF94A3B8);
+        outlineVariant = const Color(0xFF1E2D3E);
+        outline = const Color(0xFF475569);
+      } else {
+        primary = const Color(0xFF0D9488);
+        secondary = const Color(0xFF1D4ED8);
+        tertiary = const Color(0xFF0EA5E9);
+        surface = const Color(0xFFF3F7FA);
+        surfaceContainerLow = const Color(0xFFFFFFFF);
+        surfaceContainer = const Color(0xFFE0F2FE);
+        surfaceContainerHigh = const Color(0xFFBAE6FD);
+        onSurface = const Color(0xFF0F172A);
+        onSurfaceVariant = const Color(0xFF475569);
+        outlineVariant = const Color(0xFFE2E8F0);
+        outline = const Color(0xFF94A3B8);
+      }
+    } else if (seedColor.value == 0xFF4E6E58) {
+      // Eucalyptus Sage (Sage)
+      if (isDark) {
+        primary = const Color(0xFF7CA982);
+        secondary = const Color(0xFFC5D3C1);
+        tertiary = const Color(0xFFD4AF37);
+        surface = const Color(0xFF0D110D);
+        surfaceContainerLow = const Color(0xFF141A14);
+        surfaceContainer = const Color(0xFF1A221A);
+        surfaceContainerHigh = const Color(0xFF2A362A);
+        onSurface = const Color(0xFFE8EBE8);
+        onSurfaceVariant = const Color(0xFF8E9B91);
+        outlineVariant = const Color(0xFF1D281D);
+        outline = const Color(0xFF414E43);
+      } else {
+        primary = const Color(0xFF4E6E58);
+        secondary = const Color(0xFF8A9A86);
+        tertiary = const Color(0xFFB89C6F);
+        surface = const Color(0xFFF4F6F4);
+        surfaceContainerLow = const Color(0xFFFFFFFF);
+        surfaceContainer = const Color(0xFFE8EBE8);
+        surfaceContainerHigh = const Color(0xFFD6DDD6);
+        onSurface = const Color(0xFF1C241E);
+        onSurfaceVariant = const Color(0xFF5A665D);
+        outlineVariant = const Color(0xFFD6DDD6);
+        outline = const Color(0xFF8E9B91);
+      }
+    } else {
+      // Default / Fallback
+      if (isDark) {
+        primary = seedColor;
+        secondary = const Color(0xFF2DD4BF);
+        tertiary = const Color(0xFFA78BFA);
+        surface = const Color(0xFF090D16);
+        surfaceContainerLow = const Color(0xFF111726);
+        surfaceContainer = const Color(0xFF151D30);
+        surfaceContainerHigh = const Color(0xFF1F2C47);
+        onSurface = const Color(0xFFF8FAFC);
+        onSurfaceVariant = const Color(0xFF94A3B8);
+        outlineVariant = const Color(0xFF1F2C47);
+        outline = const Color(0xFF334155);
+      } else {
+        primary = seedColor;
+        secondary = const Color(0xFF14B8A6);
+        tertiary = const Color(0xFF8B5CF6);
+        surface = const Color(0xFFF8FAFC);
+        surfaceContainerLow = const Color(0xFFFFFFFF);
+        surfaceContainer = const Color(0xFFF1F5F9);
+        surfaceContainerHigh = const Color(0xFFE2E8F0);
+        onSurface = const Color(0xFF0F172A);
+        onSurfaceVariant = const Color(0xFF475569);
+        outlineVariant = const Color(0xFFE2E8F0);
+        outline = const Color(0xFFCBD5E1);
+      }
+    }
+
+    final colorScheme = ColorScheme(
+      brightness: brightness,
+      primary: primary,
+      onPrimary: isDark ? Colors.black : Colors.white,
+      primaryContainer: primary.withValues(alpha: 0.15),
+      onPrimaryContainer: primary,
+      secondary: secondary,
+      onSecondary: isDark ? Colors.black : Colors.white,
+      secondaryContainer: secondary.withValues(alpha: 0.15),
+      onSecondaryContainer: secondary,
+      tertiary: tertiary,
+      onTertiary: isDark ? Colors.black : Colors.white,
+      tertiaryContainer: tertiary.withValues(alpha: 0.15),
+      onTertiaryContainer: tertiary,
+      error: const Color(0xFFEF4444),
+      onError: Colors.white,
+      errorContainer: const Color(0xFFFEE2E2),
+      onErrorContainer: const Color(0xFF991B1B),
+      surface: surface,
+      onSurface: onSurface,
+      onSurfaceVariant: onSurfaceVariant,
+      outline: outline,
+      outlineVariant: outlineVariant,
+      surfaceContainerLow: surfaceContainerLow,
+      surfaceContainer: surfaceContainer,
+      surfaceContainerHigh: surfaceContainerHigh,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(fontWeight: FontWeight.w900, letterSpacing: -1.0),
+        headlineMedium: TextStyle(fontWeight: FontWeight.w800, letterSpacing: -0.75),
+        headlineSmall: TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.5),
+        titleLarge: TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.5),
+        titleMedium: TextStyle(fontWeight: FontWeight.bold),
+        titleSmall: TextStyle(fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(fontSize: 15, height: 1.45),
+        bodyMedium: TextStyle(fontSize: 14, height: 1.4),
+        bodySmall: TextStyle(fontSize: 12, height: 1.3),
+        labelLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 0.5),
+        labelMedium: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
+        labelSmall: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, letterSpacing: 0.5),
+      ),
       cardTheme: CardThemeData(
         elevation: 0,
         color: colorScheme.surfaceContainerLow,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(AppSizes.radiusLg)),
           side: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.35 : 0.8),
-            width: 1,
+            color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.55 : 0.75),
+            width: 1.0,
           ),
         ),
       ),

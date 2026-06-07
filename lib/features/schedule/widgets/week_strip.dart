@@ -15,7 +15,7 @@ class WeekStrip extends ConsumerWidget {
     final startOfWeek = selected.subtract(Duration(days: selected.weekday - 1));
 
     return SizedBox(
-      height: 72,
+      height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 7,
@@ -24,15 +24,17 @@ class WeekStrip extends ConsumerWidget {
           final isSelected = date.isSameDay(selected);
           final isToday = date.isToday;
           final colorScheme = Theme.of(context).colorScheme;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
             child: InkWell(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               onTap: () =>
                   ref.read(selectedScheduleDateProvider.notifier).state = date,
-              child: Container(
-                width: 56,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 58,
                 decoration: BoxDecoration(
                   gradient: isSelected
                       ? LinearGradient(
@@ -44,23 +46,25 @@ class WeekStrip extends ConsumerWidget {
                           end: Alignment.bottomRight,
                         )
                       : null,
-                  color: !isSelected && isToday
-                      ? colorScheme.primary.withValues(alpha: 0.08)
-                      : null,
-                  borderRadius: BorderRadius.circular(16),
+                  color: isSelected
+                      ? null
+                      : (isToday
+                          ? colorScheme.primary.withValues(alpha: 0.12)
+                          : colorScheme.surfaceContainerLow),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? Colors.transparent
                         : (isToday
-                            ? colorScheme.primary.withValues(alpha: 0.5)
-                            : colorScheme.outlineVariant.withValues(alpha: 0.35)),
+                            ? colorScheme.primary.withValues(alpha: 0.6)
+                            : colorScheme.outlineVariant.withValues(alpha: isDark ? 0.5 : 0.8)),
                     width: 1,
                   ),
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.3),
-                            blurRadius: 8,
+                            color: colorScheme.primary.withValues(alpha: 0.35),
+                            blurRadius: 10,
                             offset: const Offset(0, 4),
                           )
                         ]
@@ -77,21 +81,21 @@ class WeekStrip extends ConsumerWidget {
                                 : colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
-                            letterSpacing: 0.5,
+                            letterSpacing: 0.6,
                           ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Text(
                       '${date.day}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: isSelected ? Colors.white : colorScheme.onSurface,
                             fontWeight: isToday || isSelected
                                 ? FontWeight.w900
-                                : FontWeight.normal,
+                                : FontWeight.w600,
                           ),
                     ),
                     if (isToday) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 3),
                       Container(
                         width: 4,
                         height: 4,

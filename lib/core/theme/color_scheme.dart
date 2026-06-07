@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 /// Default seed colors for accent picker.
 abstract final class AppSeedColors {
   static const List<Color> options = [
-    Color(0xFF4F46E5), // Indigo Voyager
-    Color(0xFF0D9488), // Emerald Mint
-    Color(0xFFF43F5E), // Sunset Rose
-    Color(0xFFD97706), // Amber Glow
-    Color(0xFF7C3AED), // Royal Violet
-    Color(0xFF0EA5E9), // Ocean Breeze
+    Color(0xFF6366F1), // Voyager Neon (Indigo)
+    Color(0xFFE07A5F), // Ethereal Rose (Rose Gold)
+    Color(0xFF0D9488), // Arctic Glacier (Arctic Teal)
+    Color(0xFF4E6E58), // Eucalyptus Sage (Sage)
   ];
 }

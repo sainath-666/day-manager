@@ -65,18 +65,18 @@ class ScheduleEntryTile extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       decoration: BoxDecoration(
         color: entry.color.withValues(alpha: isDark ? 0.08 : 0.12),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border(
-          left: BorderSide(color: entry.color, width: 4),
-          top: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
-          right: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
-          bottom: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
+          left: BorderSide(color: entry.color, width: 5),
+          top: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.45 : 0.65)),
+          right: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.45 : 0.65)),
+          bottom: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.45 : 0.65)),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.12 : 0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: isDark ? 0.08 : 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -84,7 +84,7 @@ class ScheduleEntryTile extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showEditSheet(context, ref),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(

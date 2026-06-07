@@ -245,8 +245,8 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                                 // Checkbox Circle
                                 AnimatedContainer(
                                   duration: 200.ms,
-                                  width: 20,
-                                  height: 20,
+                                  width: 22,
+                                  height: 22,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
@@ -258,11 +258,20 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                                     color: isCompleted
                                         ? colorScheme.primary
                                         : Colors.transparent,
+                                    boxShadow: isCompleted
+                                        ? [
+                                            BoxShadow(
+                                              color: colorScheme.primary.withValues(alpha: 0.3),
+                                              blurRadius: 6,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ]
+                                        : null,
                                   ),
                                   child: isCompleted
                                       ? const Icon(
                                           Icons.check,
-                                          size: 12,
+                                          size: 14,
                                           color: Colors.white,
                                         )
                                       : null,
@@ -272,15 +281,17 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                                 Expanded(
                                   child: Text(
                                     title,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      decoration: isCompleted
-                                          ? TextDecoration.lineThrough
-                                          : null,
-                                      color: isCompleted
-                                          ? colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
-                                          : colorScheme.onSurface,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          decoration: isCompleted
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                          color: isCompleted
+                                              ? colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
+                                              : colorScheme.onSurface,
+                                          fontWeight: isCompleted
+                                              ? FontWeight.normal
+                                              : FontWeight.w600,
+                                        ),
                                   ),
                                 ),
                                 // Delete
@@ -288,7 +299,7 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
                                   icon: Icon(
                                     Icons.delete_outline,
                                     size: 18,
-                                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                                   ),
                                   onPressed: () => ref.read(todosProvider.notifier).deleteTodo(id),
                                   padding: EdgeInsets.zero,
