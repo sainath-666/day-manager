@@ -143,25 +143,25 @@ class QuickActionsRow extends StatelessWidget {
         _ActionBtn(
           icon: Icons.add_task_outlined,
           label: 'New Task',
-          color: Colors.blue,
+          color: const Color(0xFF6366F1), // Premium Indigo
           onTap: () => context.push('/tasks/new'),
         ),
         _ActionBtn(
           icon: Icons.document_scanner_outlined,
           label: 'Scan Bill',
-          color: Colors.teal,
+          color: const Color(0xFF14B8A6), // Premium Mint Teal
           onTap: () => context.push('/scan'),
         ),
         _ActionBtn(
           icon: Icons.analytics_outlined,
           label: 'Analytics',
-          color: Colors.purple,
+          color: const Color(0xFF8B5CF6), // Premium Violet
           onTap: () => context.push('/analytics'),
         ),
         _ActionBtn(
           icon: Icons.settings_outlined,
           label: 'Settings',
-          color: Colors.orange,
+          color: const Color(0xFFF59E0B), // Premium Amber Orange
           onTap: () => context.push('/settings'),
         ),
       ],

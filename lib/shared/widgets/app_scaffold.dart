@@ -207,8 +207,7 @@ class _PillNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final foreground =
-        selected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant;
+    final foreground = selected ? Colors.white : colorScheme.onSurfaceVariant;
 
     return Semantics(
       selected: selected,
@@ -222,11 +221,29 @@ class _PillNavItem extends StatelessWidget {
           curve: Curves.easeOutCubic,
           height: 52,
           padding: EdgeInsets.symmetric(
-            horizontal: selected ? 10 : 4,
+            horizontal: selected ? 12 : 4,
           ),
           decoration: BoxDecoration(
-            color: selected ? colorScheme.primaryContainer : Colors.transparent,
+            gradient: selected
+                ? LinearGradient(
+                    colors: [
+                      colorScheme.primary,
+                      colorScheme.primary.withValues(alpha: 0.8),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(999),
+            boxShadow: selected
+                ? [
+                    BoxShadow(
+                      color: colorScheme.primary.withValues(alpha: 0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

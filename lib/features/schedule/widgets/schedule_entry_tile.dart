@@ -59,13 +59,26 @@ class ScheduleEntryTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       decoration: BoxDecoration(
-        color: entry.color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-        border: Border(left: BorderSide(color: entry.color, width: 4)),
+        color: entry.color.withValues(alpha: isDark ? 0.08 : 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border(
+          left: BorderSide(color: entry.color, width: 4),
+          top: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
+          right: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
+          bottom: BorderSide(color: entry.color.withValues(alpha: isDark ? 0.15 : 0.25)),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.12 : 0.03),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,

@@ -23,35 +23,84 @@ class WeekStrip extends ConsumerWidget {
           final date = startOfWeek.add(Duration(days: i));
           final isSelected = date.isSameDay(selected);
           final isToday = date.isToday;
+          final colorScheme = Theme.of(context).colorScheme;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               onTap: () =>
                   ref.read(selectedScheduleDateProvider.notifier).state = date,
               child: Container(
-                width: 52,
+                width: 56,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primaryContainer
+                  gradient: isSelected
+                      ? LinearGradient(
+                          colors: [
+                            colorScheme.primary,
+                            colorScheme.primary.withValues(alpha: 0.8),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
                       : null,
-                  borderRadius: BorderRadius.circular(12),
+                  color: !isSelected && isToday
+                      ? colorScheme.primary.withValues(alpha: 0.08)
+                      : null,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isSelected
+                        ? Colors.transparent
+                        : (isToday
+                            ? colorScheme.primary.withValues(alpha: 0.5)
+                            : colorScheme.outlineVariant.withValues(alpha: 0.35)),
+                    width: 1,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: colorScheme.primary.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          )
+                        ]
+                      : null,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      DateFormat('EEE').format(date),
-                      style: Theme.of(context).textTheme.labelSmall,
+                      DateFormat('EEE').format(date).toUpperCase(),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: isSelected
+                                ? Colors.white.withValues(alpha: 0.85)
+                                : colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                            letterSpacing: 0.5,
+                          ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       '${date.day}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight:
-                                isToday ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected ? Colors.white : colorScheme.onSurface,
+                            fontWeight: isToday || isSelected
+                                ? FontWeight.w900
+                                : FontWeight.normal,
                           ),
                     ),
+                    if (isToday) ...[
+                      const SizedBox(height: 2),
+                      Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected ? Colors.white : colorScheme.primary,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

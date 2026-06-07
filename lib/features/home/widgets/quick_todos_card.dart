@@ -151,32 +151,14 @@ class _QuickTodosCardState extends ConsumerState<QuickTodosCard> {
               decoration: InputDecoration(
                 hintText: 'Add a quick todo...',
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                filled: true,
-                fillColor: colorScheme.surface.withValues(alpha: 0.8),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.add_circle, color: colorScheme.primary),
-                  onPressed: _submit,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  splashRadius: 20,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 1.5,
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.add_circle, color: colorScheme.primary, size: 24),
+                    onPressed: _submit,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    splashRadius: 20,
                   ),
                 ),
               ),
