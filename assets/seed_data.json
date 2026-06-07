@@ -1,0 +1,96 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Morning workout",
+      "description": "30 min run + stretching",
+      "dueDate": "TODAY",
+      "dueTime": "07:00",
+      "priority": 1,
+      "isCompleted": false,
+      "tags": ["health", "daily"]
+    },
+    {
+      "id": "task-002",
+      "title": "Review Q3 report",
+      "description": "Summarize findings for team meeting",
+      "dueDate": "TODAY",
+      "dueTime": "09:30",
+      "priority": 2,
+      "isCompleted": true,
+      "tags": ["work"]
+    },
+    {
+      "id": "task-003",
+      "title": "Buy groceries",
+      "description": "Milk, eggs, bread, vegetables",
+      "dueDate": "TODAY",
+      "dueTime": "18:00",
+      "priority": 0,
+      "isCompleted": false,
+      "tags": ["errands"]
+    },
+    {
+      "id": "task-004",
+      "title": "Doctor appointment",
+      "dueDate": "TOMORROW",
+      "dueTime": "11:00",
+      "priority": 2,
+      "isCompleted": false,
+      "tags": ["health"]
+    },
+    {
+      "id": "task-005",
+      "title": "Pay electricity bill",
+      "dueDate": "IN_3_DAYS",
+      "dueTime": "17:00",
+      "priority": 1,
+      "isCompleted": false,
+      "tags": ["finance"]
+    }
+  ],
+  "schedule_entries": [
+    {
+      "id": "sched-001",
+      "title": "Team standup",
+      "startTime": "09:00",
+      "endTime": "09:20",
+      "repeatMode": 2,
+      "colorValue": 4284955319,
+      "notifyEnabled": true,
+      "notifyMinutesBefore": 5
+    },
+    {
+      "id": "sched-002",
+      "title": "Lunch break",
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "repeatMode": 1,
+      "colorValue": 4294940160,
+      "notifyEnabled": false,
+      "notifyMinutesBefore": 10
+    },
+    {
+      "id": "sched-003",
+      "title": "Evening jog",
+      "startTime": "18:30",
+      "endTime": "19:15",
+      "repeatMode": 1,
+      "colorValue": 4283215696,
+      "notifyEnabled": true,
+      "notifyMinutesBefore": 15
+    }
+  ],
+  "expenses": [
+    { "id": "exp-001", "amount": 850.00, "category": 2, "description": "Weekly groceries", "daysAgo": 0, "paymentMethod": 0 },
+    { "id": "exp-002", "amount": 2200.00, "category": 4, "description": "Uber ride to office", "daysAgo": 1, "paymentMethod": 1 },
+    { "id": "exp-003", "amount": 450.00, "category": 0, "description": "Lunch at Subway", "daysAgo": 1, "paymentMethod": 1 },
+    { "id": "exp-004", "amount": 3500.00, "category": 5, "description": "Electricity bill", "daysAgo": 3, "paymentMethod": 0 },
+    { "id": "exp-005", "amount": 1200.00, "category": 1, "description": "Petrol fill-up", "daysAgo": 3, "paymentMethod": 0 },
+    { "id": "exp-006", "amount": 699.00, "category": 6, "description": "Movie tickets", "daysAgo": 5, "paymentMethod": 1 },
+    { "id": "exp-007", "amount": 5400.00, "category": 7, "description": "Clothes shopping", "daysAgo": 7, "paymentMethod": 1 },
+    { "id": "exp-008", "amount": 2800.00, "category": 2, "description": "Grocery run", "daysAgo": 10, "paymentMethod": 0 },
+    { "id": "exp-009", "amount": 600.00, "category": 0, "description": "Dinner out", "daysAgo": 12, "paymentMethod": 1 },
+    { "id": "exp-010", "amount": 8000.00, "category": 4, "description": "Monthly rent split", "daysAgo": 15, "paymentMethod": 0 }
+  ]
+}
