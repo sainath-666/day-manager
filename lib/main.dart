@@ -29,6 +29,7 @@ Future<void> main() async {
     Hive.openBox<ScheduleEntry>('schedule'),
     Hive.openBox<Expense>('expenses'),
     Hive.openBox<BillNote>('bill_notes'),
+    Hive.openBox('settings'),
   ]);
 
   await NotificationService.init();

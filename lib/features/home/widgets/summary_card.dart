@@ -22,8 +22,26 @@ class SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      color: colorScheme.primaryContainer,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.primary,
+            colorScheme.primary.withValues(alpha: 0.85),
+            colorScheme.secondary,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.lg),
         child: Column(
@@ -31,13 +49,14 @@ class SummaryCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.auto_awesome, color: colorScheme.onPrimaryContainer),
+                const Icon(Icons.auto_awesome, color: Colors.white),
                 const SizedBox(width: AppSizes.sm),
                 Text(
                   AppStrings.todaysProgress,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
                       ),
                 ),
               ],
@@ -45,25 +64,35 @@ class SummaryCard extends StatelessWidget {
             const SizedBox(height: AppSizes.lg),
             LinearProgressIndicator(
               value: completionRate,
-              minHeight: 10,
-              color: colorScheme.primary,
-              backgroundColor: colorScheme.onPrimaryContainer.withValues(
-                alpha: 0.18,
-              ),
+              minHeight: 12,
+              color: Colors.white,
+              backgroundColor: Colors.white24,
               borderRadius: BorderRadius.circular(999),
-            ).animate().fadeIn(duration: 300.ms),
+            ).animate().fadeIn(duration: 450.ms).scale(duration: 350.ms, curve: Curves.easeOut),
             const SizedBox(height: AppSizes.md),
-            Text(
-              '$completedCount/$totalCount ${AppStrings.tasksDone}',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w700,
-                  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '$completedCount/$totalCount ${AppStrings.tasksDone}',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+                Text(
+                  '${(completionRate * 100).toStringAsFixed(0)}%',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+              ],
             ),
           ],
         ),
       ),
-    );
+    ).animate().slideX(begin: -0.05, end: 0, duration: 400.ms, curve: Curves.easeOutCubic).fadeIn(duration: 400.ms);
   }
 }
 
@@ -83,8 +112,26 @@ class SpendSummaryCard extends StatelessWidget {
     final trend = currentSpend <= lastSpend;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      color: colorScheme.secondaryContainer,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.tertiary,
+            colorScheme.tertiary.withValues(alpha: 0.85),
+            colorScheme.primaryContainer.withValues(alpha: 0.3),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.tertiary.withValues(alpha: 0.2),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.lg),
         child: Column(
@@ -92,14 +139,15 @@ class SpendSummaryCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.account_balance_wallet_outlined,
-                    color: colorScheme.onSecondaryContainer),
+                const Icon(Icons.account_balance_wallet_outlined,
+                    color: Colors.white),
                 const SizedBox(width: AppSizes.sm),
                 Text(
                   AppStrings.thisMonthsSpend,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: colorScheme.onSecondaryContainer,
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
                       ),
                 ),
               ],
@@ -110,30 +158,49 @@ class SpendSummaryCard extends StatelessWidget {
                 Text(
                   currentSpend.toCurrency(),
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: colorScheme.onSecondaryContainer,
-                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
                       ),
                 ),
-                const SizedBox(width: AppSizes.sm),
-                Icon(
-                  trend ? Icons.trending_down : Icons.trending_up,
-                  color: trend
-                      ? colorScheme.primary
-                      : colorScheme.error,
-                ),
+                const SizedBox(width: AppSizes.md),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: trend ? const Color(0xFF10B981).withValues(alpha: 0.3) : Colors.red.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        trend ? Icons.trending_down : Icons.trending_up,
+                        color: trend ? Colors.greenAccent : Colors.redAccent,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        trend ? 'Savings' : 'Overspend',
+                        style: TextStyle(
+                          color: trend ? Colors.greenAccent : Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().scale(duration: 400.ms, delay: 200.ms, curve: Curves.easeOutBack),
               ],
             ),
+            const SizedBox(height: 6),
             Text(
               '${AppStrings.vsLastMonth}: ${lastSpend.toCurrency()}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSecondaryContainer.withValues(
-                      alpha: 0.78,
-                    ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.75),
                   ),
             ),
           ],
         ),
       ),
-    );
+    ).animate().slideX(begin: 0.05, end: 0, duration: 400.ms, curve: Curves.easeOutCubic).fadeIn(duration: 400.ms);
   }
 }

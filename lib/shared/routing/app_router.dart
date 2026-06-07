@@ -7,21 +7,40 @@ import '../../features/bill_scanner/bill_scanner_screen.dart';
 import '../../features/expenses/expense_detail_screen.dart';
 import '../../features/expenses/expenses_screen.dart';
 import '../../features/home/home_screen.dart';
+import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/schedule/schedule_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/tasks/task_detail_screen.dart';
 import '../../features/tasks/tasks_screen.dart';
+import '../../providers/settings_providers.dart';
 import '../widgets/app_scaffold.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Application router configuration.
+/// Application router configuration with onboarding redirect logic.
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final onboardingCompleted = ref.watch(onboardingCompletedProvider);
+
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: onboardingCompleted ? '/home' : '/onboarding',
+    redirect: (context, state) {
+      final path = state.uri.path;
+      if (!onboardingCompleted && path != '/onboarding') {
+        return '/onboarding';
+      }
+      if (onboardingCompleted && path == '/onboarding') {
+        return '/home';
+      }
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: '/onboarding',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (_, __) => const OnboardingScreen(),
+      ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (ctx, state, child) => AppScaffold(child: child),

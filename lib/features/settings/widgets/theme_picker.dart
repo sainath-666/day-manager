@@ -26,7 +26,7 @@ class ThemePicker extends ConsumerWidget {
             final selected = color == seedColor;
             return GestureDetector(
               onTap: () =>
-                  ref.read(seedColorProvider.notifier).state = color,
+                  ref.read(seedColorProvider.notifier).setColor(color),
               child: CircleAvatar(
                 radius: selected ? 20 : 16,
                 backgroundColor: color,
@@ -46,7 +46,7 @@ class ThemePicker extends ConsumerWidget {
           ],
           selected: {themeMode},
           onSelectionChanged: (s) =>
-              ref.read(themeModeProvider.notifier).state = s.first,
+              ref.read(themeModeProvider.notifier).setThemeMode(s.first),
         ),
       ],
     );

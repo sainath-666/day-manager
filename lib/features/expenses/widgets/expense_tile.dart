@@ -18,7 +18,13 @@ class ExpenseTile extends StatelessWidget {
     final payment = PaymentMethod.fromInt(expense.paymentMethod);
 
     return ListTile(
-      leading: Text(category.emoji, style: const TextStyle(fontSize: 24)),
+      leading: Hero(
+        tag: 'expense-emoji-${expense.id}',
+        child: Material(
+          color: Colors.transparent,
+          child: Text(category.emoji, style: const TextStyle(fontSize: 24)),
+        ),
+      ),
       title: Text(expense.description),
       subtitle: Text(category.label),
       trailing: Column(

@@ -9,6 +9,7 @@ import '../../providers/repository_providers.dart';
 import '../../providers/task_providers.dart';
 import '../../shared/widgets/loading_skeleton.dart';
 import 'widgets/task_form.dart';
+import 'widgets/priority_chip.dart';
 
 /// Task detail and edit screen.
 class TaskDetailScreen extends ConsumerWidget {
@@ -66,7 +67,16 @@ class TaskDetailScreen extends ConsumerWidget {
               ),
               if (task.description != null) Text(task.description!),
               const SizedBox(height: 8),
-              Text('Priority: ${Priority.fromInt(task.priority).label}'),
+              Row(
+                children: [
+                  Hero(
+                    tag: 'task-priority-${task.id}',
+                    child: PriorityIndicator(priority: task.priority),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('Priority: ${Priority.fromInt(task.priority).label}'),
+                ],
+              ),
               if (task.dueDate != null)
                 Text('Due: ${task.dueDate!.formatDisplay()} ${task.dueTime ?? ''}'),
               const Divider(),

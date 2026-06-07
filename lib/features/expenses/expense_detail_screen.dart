@@ -57,7 +57,19 @@ class ExpenseDetailScreen extends ConsumerWidget {
                 expense.amount.toCurrency(),
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              Text('${category.emoji} ${category.label}'),
+              Row(
+                children: [
+                  Hero(
+                    tag: 'expense-emoji-${expense.id}',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(category.emoji, style: const TextStyle(fontSize: 24)),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(category.label, style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
               Text(PaymentMethod.fromInt(expense.paymentMethod).label),
               Text(expense.date.formatDisplay()),
               const Divider(),

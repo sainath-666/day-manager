@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
@@ -65,7 +66,7 @@ class HomeScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-              ),
+              ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
               SummaryCard(
                 completionRate: completionRate,
@@ -73,7 +74,10 @@ class HomeScreen extends ConsumerWidget {
                 totalCount: todayTasks.length,
               ),
               const SizedBox(height: AppSizes.md),
-              UpcomingRemindersSection(items: upcoming),
+              UpcomingRemindersSection(items: upcoming)
+                  .animate()
+                  .fadeIn(duration: 400.ms, delay: 150.ms)
+                  .slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
               SpendSummaryCard(
                 currentSpend: currentSpend,
