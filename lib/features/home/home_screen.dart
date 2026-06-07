@@ -34,7 +34,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$_greeting, Rahul'),
+        title: Text('${_greeting()}, Rahul'),
         actions: [
           IconButton(
             icon: const Icon(Icons.bar_chart),
@@ -60,6 +60,13 @@ class HomeScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSizes.md),
             children: [
+              Text(
+                'Plan your day with focus.',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+              const SizedBox(height: AppSizes.md),
               SummaryCard(
                 completionRate: completionRate,
                 completedCount: todayTasks.where((t) => t.isCompleted).length,

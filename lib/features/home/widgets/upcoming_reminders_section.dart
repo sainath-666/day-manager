@@ -13,33 +13,54 @@ class UpcomingRemindersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (items.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppStrings.upcomingSection,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        const SizedBox(height: AppSizes.sm),
-        ...items.map((item) {
-          final color = item.type == 'task'
-              ? Priority.fromInt(item.priority).color
-              : Theme.of(context).colorScheme.primary;
-          return ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: CircleAvatar(
-              radius: 6,
-              backgroundColor: color,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.upcomingSection,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
-            title: Text(item.title),
-            trailing: Text(item.time),
-          );
-        }),
-      ],
+            const SizedBox(height: AppSizes.sm),
+            ...items.map((item) {
+              final color = item.type == 'task'
+                  ? Priority.fromInt(item.priority).color
+                  : colorScheme.primary;
+              return ListTile(
+                minLeadingWidth: 20,
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  radius: 7,
+                  backgroundColor: color,
+                ),
+                title: Text(
+                  item.title,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                trailing: Text(
+                  item.time,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 }
