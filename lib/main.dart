@@ -34,11 +34,24 @@ Future<void> main() async {
   await NotificationService.init();
   tz.initializeTimeZones();
   final timeZoneName = await FlutterTimezone.getLocalTimezone();
-  tz.setLocalLocation(tz.getLocation(timeZoneName));
+  tz.setLocalLocation(_resolveTimeZone(timeZoneName));
 
   if (kLoadSeedData) {
     await SeedData.load();
   }
 
   runApp(const ProviderScope(child: DailyFlowApp()));
+}
+
+/// Maps legacy IANA names and falls back safely if unknown.
+tz.Location _resolveTimeZone(String name) {
+  const aliases = {
+    'Asia/Calcutta': 'Asia/Kolkata',
+  };
+  final resolved = aliases[name] ?? name;
+  try {
+    return tz.getLocation(resolved);
+  } on Object {
+    return tz.getLocation('UTC');
+  }
 }
