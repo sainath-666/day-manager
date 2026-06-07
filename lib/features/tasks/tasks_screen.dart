@@ -409,7 +409,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
   }
 }
 
-class _TaskList extends StatelessWidget {
+class _TaskList extends StatefulWidget {
   const _TaskList({
     required this.tasks,
     required this.emptyMessage,
@@ -423,39 +423,171 @@ class _TaskList extends StatelessWidget {
   final VoidCallback onSelectionChanged;
 
   @override
+  State<_TaskList> createState() => _TaskListState();
+}
+
+class _TaskListState extends State<_TaskList> {
+  bool _isCompletedExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    if (tasks.isEmpty) {
-      return EmptyState(message: emptyMessage);
+    if (widget.tasks.isEmpty) {
+      return EmptyState(message: widget.emptyMessage);
     }
 
-    final isSelectionMode = selectedTaskIds.isNotEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isSelectionMode = widget.selectedTaskIds.isNotEmpty;
+
+    final pending = widget.tasks.where((t) => !t.isCompleted).toList();
+    final completed = widget.tasks.where((t) => t.isCompleted).toList();
+
+    // Flatten lists to build a single ListView with headers
+    final listItems = <Widget>[];
+
+    if (pending.isNotEmpty) {
+      listItems.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              Icon(Icons.hourglass_empty, size: 16, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                'PENDING',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '${pending.length}',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      listItems.addAll(
+        pending.map((task) => _buildTaskTile(task, isSelectionMode)),
+      );
+    }
+
+    if (completed.isNotEmpty) {
+      listItems.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
+          child: Card(
+            elevation: 0,
+            color: colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+            ),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isCompletedExpanded = !_isCompletedExpanded;
+                });
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle_outline, size: 16, color: colorScheme.onSurfaceVariant),
+                        const SizedBox(width: 8),
+                        Text(
+                          'COMPLETED',
+                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                              ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHigh,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '${completed.length}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Icon(
+                      _isCompletedExpanded ? Icons.expand_less : Icons.expand_more,
+                      size: 18,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      if (_isCompletedExpanded) {
+        listItems.addAll(
+          completed.map((task) => _buildTaskTile(task, isSelectionMode)),
+        );
+      }
+    }
 
     return ListView.builder(
-      itemCount: tasks.length,
-      itemBuilder: (_, i) {
-        final task = tasks[i];
-        final isSelected = selectedTaskIds.contains(task.id);
-        return TaskTile(
-          task: task,
-          isSelected: isSelected,
-          isSelectionMode: isSelectionMode,
-          onTap: () {
-            if (isSelectionMode) {
-              if (isSelected) {
-                selectedTaskIds.remove(task.id);
-              } else {
-                selectedTaskIds.add(task.id);
-              }
-              onSelectionChanged();
-            }
-          },
-          onLongPress: () {
-            if (!isSelectionMode) {
-              selectedTaskIds.add(task.id);
-              onSelectionChanged();
-            }
-          },
-        );
+      itemCount: listItems.length,
+      itemBuilder: (_, index) => listItems[index],
+    );
+  }
+
+  Widget _buildTaskTile(Task task, bool isSelectionMode) {
+    final isSelected = widget.selectedTaskIds.contains(task.id);
+    return TaskTile(
+      task: task,
+      isSelected: isSelected,
+      isSelectionMode: isSelectionMode,
+      onTap: () {
+        if (isSelectionMode) {
+          if (isSelected) {
+            widget.selectedTaskIds.remove(task.id);
+          } else {
+            widget.selectedTaskIds.add(task.id);
+          }
+          widget.onSelectionChanged();
+        }
+      },
+      onLongPress: () {
+        if (!isSelectionMode) {
+          widget.selectedTaskIds.add(task.id);
+          widget.onSelectionChanged();
+        }
       },
     );
   }

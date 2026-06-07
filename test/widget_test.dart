@@ -29,6 +29,7 @@ void main() {
       Hive.openBox<Expense>('expenses'),
       Hive.openBox<BillNote>('bill_notes'),
       Hive.openBox('settings'),
+      Hive.openBox('todos'),
     ]);
   });
 

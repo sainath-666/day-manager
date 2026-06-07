@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
@@ -12,6 +13,7 @@ import '../../shared/widgets/loading_skeleton.dart';
 import 'widgets/quick_add_fab.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/upcoming_reminders_section.dart';
+import 'widgets/quick_todos_card.dart';
 
 /// Home dashboard with progress, upcoming items, and spend summary.
 class HomeScreen extends ConsumerWidget {
@@ -33,9 +35,11 @@ class HomeScreen extends ConsumerWidget {
     final currentSpend = ref.watch(currentMonthSpendProvider);
     final lastSpend = ref.watch(lastMonthSpendProvider);
 
+    final dateStr = DateFormat('EEEE, MMMM d').format(DateTime.now());
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('${_greeting()}, Rahul'),
+        title: const Text('DailyFlow', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: -0.5)),
         actions: [
           IconButton(
             icon: const Icon(Icons.bar_chart),
@@ -59,31 +63,187 @@ class HomeScreen extends ConsumerWidget {
         data: (_) => RefreshIndicator(
           onRefresh: () => ref.refresh(tasksNotifierProvider.future),
           child: ListView(
-            padding: const EdgeInsets.all(AppSizes.md),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
             children: [
-              Text(
-                'Plan your day with focus.',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+              // In-body Rich Greeting Header
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${_greeting()}, Rahul',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          letterSpacing: -0.5,
+                        ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    dateStr,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
+
+              // Quick Actions Row
+              const QuickActionsRow()
+                  .animate()
+                  .fadeIn(duration: 400.ms, delay: 50.ms)
+                  .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
+              const SizedBox(height: AppSizes.md),
+
+              // Progress Card
               SummaryCard(
                 completionRate: completionRate,
                 completedCount: todayTasks.where((t) => t.isCompleted).length,
                 totalCount: todayTasks.length,
               ),
               const SizedBox(height: AppSizes.md),
+
+              // Quick Checklist
+              const QuickTodosCard()
+                  .animate()
+                  .fadeIn(duration: 450.ms, delay: 100.ms)
+                  .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
+              const SizedBox(height: AppSizes.md),
+
+              // Upcoming Reminders
               UpcomingRemindersSection(items: upcoming)
                   .animate()
-                  .fadeIn(duration: 400.ms, delay: 150.ms)
-                  .slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic),
+                  .fadeIn(duration: 450.ms, delay: 150.ms)
+                  .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
+
+              // Spend Summary Card
               SpendSummaryCard(
                 currentSpend: currentSpend,
                 lastSpend: lastSpend,
               ),
+              const SizedBox(height: AppSizes.lg),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QuickActionsRow extends StatelessWidget {
+  const QuickActionsRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _ActionBtn(
+          icon: Icons.add_task_outlined,
+          label: 'New Task',
+          color: Colors.blue,
+          onTap: () => context.push('/tasks/new'),
+        ),
+        _ActionBtn(
+          icon: Icons.document_scanner_outlined,
+          label: 'Scan Bill',
+          color: Colors.teal,
+          onTap: () => context.push('/scan'),
+        ),
+        _ActionBtn(
+          icon: Icons.analytics_outlined,
+          label: 'Analytics',
+          color: Colors.purple,
+          onTap: () => context.push('/analytics'),
+        ),
+        _ActionBtn(
+          icon: Icons.settings_outlined,
+          label: 'Settings',
+          color: Colors.orange,
+          onTap: () => context.push('/settings'),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActionBtn extends StatelessWidget {
+  const _ActionBtn({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Expanded(
+      child: Card(
+        elevation: 0,
+        color: colorScheme.surfaceContainerLow.withValues(alpha: 0.6),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+          ),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.85),
+                        color.withValues(alpha: 0.55),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

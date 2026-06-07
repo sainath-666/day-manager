@@ -25,7 +25,20 @@ class ExpenseTile extends StatelessWidget {
           child: Text(category.emoji, style: const TextStyle(fontSize: 24)),
         ),
       ),
-      title: Text(expense.description),
+      title: Row(
+        children: [
+          Expanded(child: Text(expense.description)),
+          if (expense.imagePath != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Icon(
+                Icons.receipt_long,
+                size: 14,
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+              ),
+            ),
+        ],
+      ),
       subtitle: Text(category.label),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,

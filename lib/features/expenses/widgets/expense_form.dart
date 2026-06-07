@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_strings.dart';
 import '../../../core/enums/expense_category.dart';
@@ -28,6 +31,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   ExpenseCategory _category = ExpenseCategory.other;
   PaymentMethod _payment = PaymentMethod.cash;
   DateTime _date = DateTime.now();
+  String? _imagePath;
 
   @override
   void initState() {
@@ -41,6 +45,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _category = ExpenseCategory.fromInt(e.category);
       _payment = PaymentMethod.fromInt(e.paymentMethod);
       _date = e.date;
+      _imagePath = e.imagePath;
     }
   }
 
@@ -49,6 +54,52 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _amountController.dispose();
     _descController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showImagePickerOptions() async {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) {
+        final colorScheme = Theme.of(context).colorScheme;
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: colorScheme.primary),
+                title: const Text('Take Photo (Camera)'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library, color: colorScheme.primary),
+                title: const Text('Choose from Gallery'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: source, imageQuality: 85);
+      if (picked == null) return;
+      setState(() => _imagePath = picked.path);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick image: $e')),
+        );
+      }
+    }
   }
 
   void _submit() {
@@ -62,7 +113,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
         ..category = _category.value
         ..description = _descController.text.trim()
         ..date = _date
-        ..paymentMethod = _payment.value;
+        ..paymentMethod = _payment.value
+        ..imagePath = _imagePath;
       widget.onSave(expense);
     } else {
       widget.onSave(Expense.create(
@@ -71,6 +123,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         description: _descController.text.trim(),
         date: _date,
         paymentMethod: _payment.value,
+        imagePath: _imagePath,
       ));
     }
   }
@@ -124,6 +177,48 @@ class _ExpenseFormState extends State<ExpenseForm> {
             value: _date,
             onChanged: (d) => setState(() => _date = d ?? _date),
           ),
+          const SizedBox(height: 16),
+          // Receipt Photo Section
+          Text('Receipt Photo', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          if (_imagePath != null) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Image.file(
+                    File(_imagePath!),
+                    height: 140,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      child: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.white, size: 20),
+                        onPressed: () => setState(() => _imagePath = null),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: const Text('Change Photo'),
+              onPressed: _showImagePickerOptions,
+            ),
+          ] else
+            OutlinedButton.icon(
+              icon: const Icon(Icons.camera_alt_outlined),
+              label: const Text('Attach Receipt Photo'),
+              onPressed: _showImagePickerOptions,
+            ),
           const SizedBox(height: 16),
           FilledButton(
             onPressed: _submit,
