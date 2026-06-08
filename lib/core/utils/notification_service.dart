@@ -113,6 +113,41 @@ class NotificationService {
     });
   }
 
+  /// Schedules an appointment reminder before the appointment time.
+  static Future<void> scheduleAppointmentReminder({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledAt,
+    String? payload,
+  }) async {
+    if (!scheduledAt.isAfter(DateTime.now())) return;
+
+    await _safe(() async {
+      final tzTime = tz.TZDateTime.from(scheduledAt, tz.local);
+      await _plugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tzTime,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'appointment_reminders',
+            'Appointment Reminders',
+            channelDescription: 'Notifications for upcoming appointments',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
+      );
+    });
+  }
+
   /// Cancels a scheduled notification by [id].
   static Future<void> cancel(int id) => _safe(() => _plugin.cancel(id));
 }

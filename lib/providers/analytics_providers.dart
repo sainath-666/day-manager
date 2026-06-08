@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/enums/expense_category.dart';
 import '../core/extensions/date_time_ext.dart';
 import '../data/models/monthly_total.dart';
+import '../core/enums/appointment_status.dart';
+import 'appointment_providers.dart';
 import 'repository_providers.dart';
 import 'schedule_providers.dart';
 import 'task_providers.dart';
@@ -49,11 +51,13 @@ class UpcomingItem {
   final int priority;
 }
 
-/// Next 3 upcoming tasks and schedule entries combined.
+/// Next 3 upcoming tasks, schedule entries, and appointments combined.
 final upcomingRemindersProvider = Provider<List<UpcomingItem>>((ref) {
   final todayTasks = ref.watch(todayTasksProvider);
   final scheduleAsync = ref.watch(scheduleNotifierProvider);
   final scheduleEntries = scheduleAsync.valueOrNull ?? [];
+  final appointmentsAsync = ref.watch(appointmentsNotifierProvider);
+  final appointments = appointmentsAsync.valueOrNull ?? [];
 
   final items = <UpcomingItem>[];
 
@@ -71,6 +75,17 @@ final upcomingRemindersProvider = Provider<List<UpcomingItem>>((ref) {
       title: entry.title,
       time: entry.startTime,
       type: 'schedule',
+    ));
+  }
+
+  for (final appointment in appointments.where((a) {
+    final status = AppointmentStatus.fromInt(a.status);
+    return status.isActive && a.date.isToday;
+  })) {
+    items.add(UpcomingItem(
+      title: appointment.title,
+      time: appointment.time,
+      type: 'appointment',
     ));
   }
 

@@ -36,7 +36,9 @@ class UpcomingRemindersSection extends StatelessWidget {
             ...items.map((item) {
               final color = item.type == 'task'
                   ? Priority.fromInt(item.priority).color
-                  : colorScheme.primary;
+                  : item.type == 'appointment'
+                      ? colorScheme.tertiary
+                      : colorScheme.primary;
               return ListTile(
                 minLeadingWidth: 20,
                 contentPadding: EdgeInsets.zero,

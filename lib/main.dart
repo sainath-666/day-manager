@@ -9,6 +9,7 @@ import 'app.dart';
 import 'core/constants/feature_flags.dart';
 import 'core/utils/notification_service.dart';
 import 'core/utils/seed_data.dart';
+import 'data/models/appointment.dart';
 import 'data/models/bill_note.dart';
 import 'data/models/expense.dart';
 import 'data/models/schedule_entry.dart';
@@ -23,12 +24,14 @@ Future<void> main() async {
   Hive.registerAdapter(ScheduleEntryAdapter());
   Hive.registerAdapter(ExpenseAdapter());
   Hive.registerAdapter(BillNoteAdapter());
+  Hive.registerAdapter(AppointmentAdapter());
 
   await Future.wait([
     Hive.openBox<Task>('tasks'),
     Hive.openBox<ScheduleEntry>('schedule'),
     Hive.openBox<Expense>('expenses'),
     Hive.openBox<BillNote>('bill_notes'),
+    Hive.openBox<Appointment>('appointments'),
     Hive.openBox('settings'),
     Hive.openBox('todos'),
   ]);

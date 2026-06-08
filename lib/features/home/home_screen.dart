@@ -11,6 +11,8 @@ import '../../providers/expense_providers.dart';
 import '../../providers/settings_providers.dart';
 import '../../providers/task_providers.dart';
 import '../../shared/widgets/loading_skeleton.dart';
+import '../../providers/appointment_providers.dart';
+import 'widgets/next_appointment_card.dart';
 import 'widgets/quick_add_fab.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/upcoming_reminders_section.dart';
@@ -151,6 +153,12 @@ class HomeScreen extends ConsumerWidget {
                   .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
 
+              const NextAppointmentCard()
+                  .animate()
+                  .fadeIn(duration: 450.ms, delay: 120.ms)
+                  .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
+              const SizedBox(height: AppSizes.md),
+
               // Upcoming Reminders
               UpcomingRemindersSection(items: upcoming)
                   .animate()
@@ -172,11 +180,11 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class QuickActionsRow extends StatelessWidget {
+class QuickActionsRow extends ConsumerWidget {
   const QuickActionsRow({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -187,16 +195,19 @@ class QuickActionsRow extends StatelessWidget {
           onTap: () => context.push('/tasks/new'),
         ),
         _ActionBtn(
+          icon: Icons.event_note_outlined,
+          label: 'Appointment',
+          color: const Color(0xFF3B82F6),
+          onTap: () {
+            ref.read(scheduleTabIndexProvider.notifier).state = 1;
+            context.go('/schedule');
+          },
+        ),
+        _ActionBtn(
           icon: Icons.document_scanner_outlined,
           label: 'Scan Bill',
           color: const Color(0xFF14B8A6), // Premium Mint Teal
           onTap: () => context.push('/scan'),
-        ),
-        _ActionBtn(
-          icon: Icons.analytics_outlined,
-          label: 'Analytics',
-          color: const Color(0xFF8B5CF6), // Premium Violet
-          onTap: () => context.push('/analytics'),
         ),
         _ActionBtn(
           icon: Icons.settings_outlined,

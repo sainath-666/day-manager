@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/analytics/analytics_screen.dart';
+import '../../features/appointments/appointment_detail_screen.dart';
 import '../../features/bill_scanner/bill_scanner_screen.dart';
 import '../../features/expenses/expense_detail_screen.dart';
 import '../../features/expenses/expenses_screen.dart';
@@ -98,6 +99,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/settings',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (_, __) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/appointments/:id',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (_, state) => AppointmentDetailScreen(
+          appointmentId: state.pathParameters['id']!,
+        ),
       ),
     ],
   );
