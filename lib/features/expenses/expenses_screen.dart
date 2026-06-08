@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/utils/app_animations.dart';
 import '../../core/enums/expense_category.dart';
 import '../../core/enums/payment_method.dart';
 import '../../core/extensions/date_time_ext.dart';
@@ -50,20 +51,14 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   }
 
   void _showAddSheet() {
-    showModalBottomSheet<void>(
+    AppAnimations.showBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.viewInsetsOf(ctx).bottom + 16,
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: ExpenseForm(
           onSave: (expense) async {
             await ref.read(expensesNotifierProvider.notifier).add(expense);
-            if (ctx.mounted) Navigator.pop(ctx);
+            if (context.mounted) Navigator.pop(context);
           },
         ),
       ),
@@ -334,18 +329,24 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                     ? const EmptyState(message: AppStrings.noExpenses)
                     : ListView(
                         padding: const EdgeInsets.only(bottom: 132),
-                        children: grouped.entries.expand((entry) {
-                          return [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                              child: Text(
-                                entry.key,
-                                style: Theme.of(context).textTheme.titleSmall,
+                        children: () {
+                          var index = 0;
+                          return grouped.entries.expand((entry) {
+                            final section = <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                                child: Text(
+                                  entry.key,
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ).staggerIn(index++),
                               ),
-                            ),
-                            ...entry.value.map((e) => ExpenseTile(expense: e)),
-                          ];
-                        }).toList(),
+                              ...entry.value.map(
+                                (e) => ExpenseTile(expense: e, index: index++),
+                              ),
+                            ];
+                            return section;
+                          }).toList();
+                        }(),
                       ),
               ),
             ],

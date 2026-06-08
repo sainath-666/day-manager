@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../data/models/task.dart';
 import '../../../providers/task_providers.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
@@ -17,6 +18,7 @@ class TaskTile extends ConsumerWidget {
     this.isSelectionMode = false,
     this.onTap,
     this.onLongPress,
+    this.index = 0,
   });
 
   final Task task;
@@ -24,28 +26,45 @@ class TaskTile extends ConsumerWidget {
   final bool isSelectionMode;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     // Build the main list tile widget
-    final listTile = ListTile(
+    final listTile = AnimatedContainer(
+      duration: AppAnimations.normal,
+      curve: AppAnimations.enterCurve,
+      decoration: BoxDecoration(
+        color: isSelected
+            ? colorScheme.primaryContainer.withValues(alpha: 0.15)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
       leading: isSelectionMode
           ? Checkbox(
               value: isSelected,
               onChanged: (_) => onTap?.call(),
               activeColor: colorScheme.primary,
             )
-          : PriorityIndicator(priority: task.priority),
-      title: Text(
-        task.title,
+          : AnimatedSwitcher(
+              duration: AppAnimations.fast,
+              child: PriorityIndicator(
+                key: ValueKey('${task.id}-${task.isCompleted}'),
+                priority: task.priority,
+              ),
+            ),
+      title: AnimatedDefaultTextStyle(
+        duration: AppAnimations.normal,
         style: task.isCompleted
-            ? TextStyle(
+            ? Theme.of(context).textTheme.bodyLarge!.copyWith(
                 decoration: TextDecoration.lineThrough,
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
               )
-            : null,
+            : Theme.of(context).textTheme.bodyLarge!,
+        child: Text(task.title),
       ),
       subtitle: task.dueTime != null ? Text(task.dueTime!) : null,
       trailing: Row(
@@ -78,14 +97,14 @@ class TaskTile extends ConsumerWidget {
       ),
       onTap: isSelectionMode ? onTap : () => context.push('/tasks/${task.id}'),
       onLongPress: onLongPress,
+    ),
     );
+
+    Widget tile = listTile;
 
     // Disable dismiss actions when in selection mode
     if (isSelectionMode) {
-      return Container(
-        color: isSelected ? colorScheme.primaryContainer.withValues(alpha: 0.15) : null,
-        child: listTile,
-      );
+      return tile.staggerIn(index);
     }
 
     return Dismissible(
@@ -137,7 +156,7 @@ class TaskTile extends ConsumerWidget {
           }
         }
       },
-      child: listTile,
-    );
+      child: tile,
+    ).staggerIn(index);
   }
 }

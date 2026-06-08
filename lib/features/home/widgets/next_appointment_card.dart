@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +8,9 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/enums/appointment_type.dart';
 import '../../../core/extensions/date_time_ext.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../providers/appointment_providers.dart';
+import '../../../shared/widgets/scale_tap.dart';
 
 /// Shows the next upcoming appointment on the home dashboard.
 class NextAppointmentCard extends ConsumerWidget {
@@ -27,10 +30,9 @@ class NextAppointmentCard extends ConsumerWidget {
             ? 'Tomorrow'
             : DateFormat('EEE, MMM d').format(next.date);
 
-    return Card(
-      child: InkWell(
-        onTap: () => context.push('/appointments/${next.id}'),
-        borderRadius: BorderRadius.circular(12),
+    return ScaleTap(
+      onTap: () => context.push('/appointments/${next.id}'),
+      child: Card(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.md),
           child: Row(
@@ -43,7 +45,14 @@ class NextAppointmentCard extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(type.icon, color: next.color),
-              ),
+              )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .scale(
+                    begin: const Offset(1, 1),
+                    end: const Offset(1.05, 1.05),
+                    duration: 1600.ms,
+                    curve: Curves.easeInOut,
+                  ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -85,6 +94,9 @@ class NextAppointmentCard extends ConsumerWidget {
           ),
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: AppAnimations.normal)
+        .slideX(begin: -0.04, end: 0, duration: AppAnimations.slow, curve: AppAnimations.enterCurve);
   }
 }

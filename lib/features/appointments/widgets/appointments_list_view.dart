@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../data/models/appointment.dart';
 import 'appointment_tile.dart';
 
@@ -15,7 +16,8 @@ class AppointmentsListView extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
       itemCount: appointments.length,
-      itemBuilder: (_, i) => AppointmentTile(appointment: appointments[i]),
+      itemBuilder: (_, i) =>
+          AppointmentTile(appointment: appointments[i], index: i),
     );
   }
 }
@@ -81,6 +83,6 @@ class AppointmentsDaySummary extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).staggerIn(0, stepMs: 0);
   }
 }

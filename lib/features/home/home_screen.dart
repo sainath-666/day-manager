@@ -11,6 +11,7 @@ import '../../providers/expense_providers.dart';
 import '../../providers/settings_providers.dart';
 import '../../providers/task_providers.dart';
 import '../../shared/widgets/loading_skeleton.dart';
+import '../../shared/widgets/scale_tap.dart';
 import '../../providers/appointment_providers.dart';
 import 'widgets/next_appointment_card.dart';
 import 'widgets/quick_add_fab.dart';
@@ -153,10 +154,7 @@ class HomeScreen extends ConsumerWidget {
                   .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
               const SizedBox(height: AppSizes.md),
 
-              const NextAppointmentCard()
-                  .animate()
-                  .fadeIn(duration: 450.ms, delay: 120.ms)
-                  .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
+              const NextAppointmentCard(),
               const SizedBox(height: AppSizes.md),
 
               // Upcoming Reminders
@@ -250,9 +248,8 @@ class _ActionBtn extends StatelessWidget {
             width: 1.0,
           ),
         ),
-        child: InkWell(
+        child: ScaleTap(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
             child: Column(

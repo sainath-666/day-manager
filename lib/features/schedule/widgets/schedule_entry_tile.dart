@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/enums/repeat_mode.dart' as app_repeat;
+import '../../../core/utils/app_animations.dart';
 import '../../../data/models/schedule_entry.dart';
 import '../../../providers/schedule_providers.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
@@ -10,9 +10,10 @@ import 'schedule_form.dart';
 
 /// Color-coded schedule entry card for timeline.
 class ScheduleEntryTile extends ConsumerWidget {
-  const ScheduleEntryTile({super.key, required this.entry});
+  const ScheduleEntryTile({super.key, required this.entry, this.index = 0});
 
   final ScheduleEntry entry;
+  final int index;
 
   String _duration() {
     final start = entry.startTime.split(':');
@@ -175,7 +176,7 @@ class ScheduleEntryTile extends ConsumerWidget {
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 250.ms).slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic);
+    ).staggerIn(index);
   }
 }
 

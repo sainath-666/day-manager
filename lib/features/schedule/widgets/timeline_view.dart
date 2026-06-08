@@ -54,7 +54,12 @@ class TimelineView extends StatelessWidget {
                       ? _OpenSlot(hour: hour)
                       : Column(
                           children: hourEntries
-                              .map((entry) => ScheduleEntryTile(entry: entry))
+                              .asMap()
+                              .entries
+                              .map((e) => ScheduleEntryTile(
+                                    entry: e.value,
+                                    index: e.key,
+                                  ))
                               .toList(),
                         ),
                 ),

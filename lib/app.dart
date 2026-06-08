@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/app_animations.dart';
 import 'providers/settings_providers.dart';
 import 'shared/routing/app_router.dart';
 
@@ -22,6 +23,7 @@ class DailyFlowApp extends ConsumerWidget {
       darkTheme: AppTheme.dark(seedColor),
       themeMode: themeMode,
       routerConfig: router,
+      scrollBehavior: const SmoothScrollBehavior(),
       debugShowCheckedModeBanner: false,
     );
   }

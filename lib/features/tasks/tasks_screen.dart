@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dailyflow/core/constants/app_strings.dart';
+import 'package:dailyflow/core/utils/app_animations.dart';
 import 'package:dailyflow/core/enums/priority.dart';
 import 'package:dailyflow/data/models/task.dart';
 import 'package:dailyflow/providers/task_providers.dart';
@@ -50,15 +51,14 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
   }
 
   void _showAddSheet() {
-    showModalBottomSheet<void>(
+    AppAnimations.showBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: TaskForm(
           onSave: (task) async {
             await ref.read(tasksNotifierProvider.notifier).add(task);
-            if (ctx.mounted) Navigator.pop(ctx);
+            if (context.mounted) Navigator.pop(context);
           },
         ),
       ),
@@ -366,9 +366,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
       body: tasksAsync.when(
         loading: () => ListView.builder(
           itemCount: 5,
-          itemBuilder: (_, __) => const Padding(
-            padding: EdgeInsets.all(8),
-            child: LoadingSkeleton(),
+          itemBuilder: (_, i) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: LoadingSkeleton(index: i),
           ),
         ),
         error: (e, _) => ErrorView(
@@ -481,8 +481,9 @@ class _TaskListState extends State<_TaskList> {
         ),
       );
 
+      var tileIndex = 0;
       listItems.addAll(
-        pending.map((task) => _buildTaskTile(task, isSelectionMode)),
+        pending.map((task) => _buildTaskTile(task, isSelectionMode, tileIndex++)),
       );
     }
 
@@ -554,11 +555,23 @@ class _TaskListState extends State<_TaskList> {
         ),
       );
 
-      if (_isCompletedExpanded) {
-        listItems.addAll(
-          completed.map((task) => _buildTaskTile(task, isSelectionMode)),
-        );
-      }
+      listItems.add(
+        AnimatedCrossFade(
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(
+            children: completed
+                .asMap()
+                .entries
+                .map((e) => _buildTaskTile(e.value, isSelectionMode, e.key + pending.length))
+                .toList(),
+          ),
+          crossFadeState: _isCompletedExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: AppAnimations.normal,
+          sizeCurve: AppAnimations.enterCurve,
+        ),
+      );
     }
 
     return ListView.builder(
@@ -568,10 +581,11 @@ class _TaskListState extends State<_TaskList> {
     );
   }
 
-  Widget _buildTaskTile(Task task, bool isSelectionMode) {
+  Widget _buildTaskTile(Task task, bool isSelectionMode, int index) {
     final isSelected = widget.selectedTaskIds.contains(task.id);
     return TaskTile(
       task: task,
+      index: index,
       isSelected: isSelected,
       isSelectionMode: isSelectionMode,
       onTap: () {

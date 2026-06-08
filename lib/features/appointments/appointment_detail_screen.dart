@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/utils/app_animations.dart';
 import '../../core/enums/appointment_status.dart';
 import '../../core/enums/appointment_type.dart';
 import '../../providers/appointment_providers.dart';
@@ -19,23 +20,17 @@ class AppointmentDetailScreen extends ConsumerWidget {
   final String appointmentId;
 
   void _showEditSheet(BuildContext context, WidgetRef ref, appointment) {
-    showModalBottomSheet<void>(
+    AppAnimations.showBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (ctx) => SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.viewInsetsOf(ctx).bottom + 16,
-        ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: AppointmentForm(
           appointment: appointment,
           onSave: (updated) async {
             await ref
                 .read(appointmentsNotifierProvider.notifier)
                 .updateAppointment(updated);
-            if (ctx.mounted) Navigator.pop(ctx);
+            if (context.mounted) Navigator.pop(context);
           },
           onDelete: () async {
             final confirm = await showConfirmDialog(
@@ -47,7 +42,7 @@ class AppointmentDetailScreen extends ConsumerWidget {
               await ref
                   .read(appointmentsNotifierProvider.notifier)
                   .delete(appointmentId);
-              if (ctx.mounted) Navigator.pop(ctx);
+              if (context.mounted) Navigator.pop(context);
               if (context.mounted) context.pop();
             }
           },
@@ -119,35 +114,35 @@ class AppointmentDetailScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-              ),
+              ).staggerIn(0, stepMs: 0),
               const SizedBox(height: 20),
               _DetailRow(
                 icon: Icons.calendar_today_outlined,
                 label: AppStrings.date,
                 value: DateFormat('EEEE, MMMM d, yyyy').format(appointment.date),
-              ),
+              ).staggerIn(1),
               _DetailRow(
                 icon: Icons.schedule_outlined,
                 label: AppStrings.appointmentTime,
                 value: '${appointment.time} (${appointment.durationMinutes} min)',
-              ),
+              ).staggerIn(2),
               if (appointment.location != null)
                 _DetailRow(
                   icon: Icons.location_on_outlined,
                   label: AppStrings.location,
                   value: appointment.location!,
-                ),
+                ).staggerIn(3),
               _DetailRow(
                 icon: type.icon,
                 label: AppStrings.appointmentType,
                 value: type.label,
-              ),
+              ).staggerIn(appointment.location != null ? 4 : 3),
               _DetailRow(
                 icon: status.icon,
                 label: AppStrings.status,
                 value: status.label,
                 valueColor: status.color,
-              ),
+              ).staggerIn(appointment.location != null ? 5 : 4),
               if (appointment.notes != null && appointment.notes!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
@@ -190,7 +185,7 @@ class AppointmentDetailScreen extends ConsumerWidget {
                 onPressed: () => _showEditSheet(context, ref, appointment),
                 icon: const Icon(Icons.edit_outlined),
                 label: const Text(AppStrings.edit),
-              ),
+              ).staggerIn(6),
             ],
           );
         },

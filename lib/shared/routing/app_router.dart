@@ -14,11 +14,25 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/tasks/task_create_screen.dart';
 import '../../features/tasks/task_detail_screen.dart';
 import '../../features/tasks/tasks_screen.dart';
+import '../../core/utils/app_animations.dart';
 import '../../providers/settings_providers.dart';
 import '../widgets/app_scaffold.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+CustomTransitionPage<void> _fadeSlidePage({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<void>(
+    key: key,
+    child: child,
+    transitionDuration: AppAnimations.normal,
+    reverseTransitionDuration: AppAnimations.fast,
+    transitionsBuilder: AppAnimations.fadeSlideTransition,
+  );
+}
 
 /// Application router configuration with onboarding redirect logic.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -57,12 +71,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'new',
-                builder: (_, __) => const TaskCreateScreen(),
+                pageBuilder: (_, state) => _fadeSlidePage(
+                  key: state.pageKey,
+                  child: const TaskCreateScreen(),
+                ),
               ),
               GoRoute(
                 path: ':id',
-                builder: (_, state) => TaskDetailScreen(
-                  taskId: state.pathParameters['id']!,
+                pageBuilder: (_, state) => _fadeSlidePage(
+                  key: state.pageKey,
+                  child: TaskDetailScreen(
+                    taskId: state.pathParameters['id']!,
+                  ),
                 ),
               ),
             ],
@@ -77,8 +97,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, state) => ExpenseDetailScreen(
-                  expenseId: state.pathParameters['id']!,
+                pageBuilder: (_, state) => _fadeSlidePage(
+                  key: state.pageKey,
+                  child: ExpenseDetailScreen(
+                    expenseId: state.pathParameters['id']!,
+                  ),
                 ),
               ),
             ],
@@ -88,23 +111,35 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/analytics',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (_, __) => const AnalyticsScreen(),
+        pageBuilder: (_, state) => _fadeSlidePage(
+          key: state.pageKey,
+          child: const AnalyticsScreen(),
+        ),
       ),
       GoRoute(
         path: '/scan',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (_, __) => const BillScannerScreen(),
+        pageBuilder: (_, state) => _fadeSlidePage(
+          key: state.pageKey,
+          child: const BillScannerScreen(),
+        ),
       ),
       GoRoute(
         path: '/settings',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (_, __) => const SettingsScreen(),
+        pageBuilder: (_, state) => _fadeSlidePage(
+          key: state.pageKey,
+          child: const SettingsScreen(),
+        ),
       ),
       GoRoute(
         path: '/appointments/:id',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (_, state) => AppointmentDetailScreen(
-          appointmentId: state.pathParameters['id']!,
+        pageBuilder: (_, state) => _fadeSlidePage(
+          key: state.pageKey,
+          child: AppointmentDetailScreen(
+            appointmentId: state.pathParameters['id']!,
+          ),
         ),
       ),
     ],

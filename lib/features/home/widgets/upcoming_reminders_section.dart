@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/enums/priority.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../providers/analytics_providers.dart';
 
 /// Upcoming reminders list for the home dashboard.
@@ -31,9 +32,11 @@ class UpcomingRemindersSection extends StatelessWidget {
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
                   ),
-            ),
+            ).staggerIn(0),
             const SizedBox(height: AppSizes.sm),
-            ...items.map((item) {
+            ...items.asMap().entries.map((entry) {
+              final item = entry.value;
+              final i = entry.key + 1;
               final color = item.type == 'task'
                   ? Priority.fromInt(item.priority).color
                   : item.type == 'appointment'
@@ -58,7 +61,7 @@ class UpcomingRemindersSection extends StatelessWidget {
                         color: colorScheme.onSurfaceVariant,
                       ),
                 ),
-              );
+              ).staggerIn(i, stepMs: 60);
             }),
           ],
         ),

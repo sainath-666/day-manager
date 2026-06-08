@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../core/extensions/double_ext.dart';
 import '../../../providers/analytics_providers.dart';
 import 'category_chip.dart';
@@ -38,6 +39,6 @@ class MonthSummaryCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    ).staggerIn(0, stepMs: 0);
   }
 }

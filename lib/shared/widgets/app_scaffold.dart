@@ -85,17 +85,25 @@ class AppScaffold extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 104),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 260),
+                duration: const Duration(milliseconds: 320),
                 switchInCurve: Curves.easeOutCubic,
                 switchOutCurve: Curves.easeInCubic,
                 transitionBuilder: (child, animation) {
+                  final curved = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  );
                   final slide = Tween<Offset>(
-                    begin: const Offset(0.04, 0),
+                    begin: const Offset(0, 0.02),
                     end: Offset.zero,
-                  ).animate(animation);
+                  ).animate(curved);
+                  final scale = Tween<double>(begin: 0.98, end: 1).animate(curved);
                   return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(position: slide, child: child),
+                    opacity: curved,
+                    child: SlideTransition(
+                      position: slide,
+                      child: ScaleTransition(scale: scale, child: child),
+                    ),
                   );
                 },
                 child: KeyedSubtree(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/utils/app_animations.dart';
 import '../../data/models/schedule_entry.dart';
 import '../../features/appointments/widgets/appointment_form.dart';
 import '../../features/appointments/widgets/appointments_list_view.dart';
@@ -21,21 +22,15 @@ class ScheduleScreen extends ConsumerWidget {
   void _showAddScheduleSheet(BuildContext context, WidgetRef ref) {
     final date = ref.read(selectedScheduleDateProvider);
 
-    showModalBottomSheet<void>(
+    AppAnimations.showBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (ctx) => SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.viewInsetsOf(ctx).bottom + 16,
-        ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: ScheduleForm(
           initialDate: date,
           onSave: (entry) async {
             await ref.read(scheduleNotifierProvider.notifier).add(entry);
-            if (ctx.mounted) Navigator.pop(ctx);
+            if (context.mounted) Navigator.pop(context);
           },
         ),
       ),
@@ -45,21 +40,15 @@ class ScheduleScreen extends ConsumerWidget {
   void _showAddAppointmentSheet(BuildContext context, WidgetRef ref) {
     final date = ref.read(selectedScheduleDateProvider);
 
-    showModalBottomSheet<void>(
+    AppAnimations.showBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (ctx) => SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.viewInsetsOf(ctx).bottom + 16,
-        ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: AppointmentForm(
           initialDate: date,
           onSave: (appointment) async {
             await ref.read(appointmentsNotifierProvider.notifier).add(appointment);
-            if (ctx.mounted) Navigator.pop(ctx);
+            if (context.mounted) Navigator.pop(context);
           },
         ),
       ),
@@ -81,11 +70,19 @@ class ScheduleScreen extends ConsumerWidget {
           '${AppStrings.schedule}  ${DateFormat('EEE d MMM').format(selectedDate)}',
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => tabIndex == 0
-            ? _showAddScheduleSheet(context, ref)
-            : _showAddAppointmentSheet(context, ref),
-        child: const Icon(Icons.add),
+      floatingActionButton: AnimatedSwitcher(
+        duration: AppAnimations.fast,
+        transitionBuilder: (child, animation) => ScaleTransition(
+          scale: animation,
+          child: child,
+        ),
+        child: FloatingActionButton(
+          key: ValueKey(tabIndex),
+          onPressed: () => tabIndex == 0
+              ? _showAddScheduleSheet(context, ref)
+              : _showAddAppointmentSheet(context, ref),
+          child: Icon(tabIndex == 0 ? Icons.add : Icons.event_available),
+        ),
       ),
       body: Column(
         children: [
@@ -113,51 +110,84 @@ class ScheduleScreen extends ConsumerWidget {
                   ref.read(scheduleTabIndexProvider.notifier).state = s.first,
             ),
           ),
-          if (tabIndex == 0) ...[
-            _ScheduleDaySummary(
-              selectedDate: selectedDate,
-              entries: dayEntries,
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: AppAnimations.normal,
+              switchInCurve: AppAnimations.enterCurve,
+              switchOutCurve: AppAnimations.exitCurve,
+              transitionBuilder: (child, animation) {
+                final offset = Tween<Offset>(
+                  begin: const Offset(0, 0.03),
+                  end: Offset.zero,
+                ).animate(animation);
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(position: offset, child: child),
+                );
+              },
+              child: tabIndex == 0
+                  ? Column(
+                      key: const ValueKey('timeline-tab'),
+                      children: [
+                        _ScheduleDaySummary(
+                          selectedDate: selectedDate,
+                          entries: dayEntries,
+                        ),
+                        Expanded(
+                          child: scheduleAsync.when(
+                            loading: () =>
+                                const Center(child: CircularProgressIndicator()),
+                            error: (e, _) => ErrorView(
+                              message: e.toString(),
+                              onRetry: () =>
+                                  ref.invalidate(scheduleNotifierProvider),
+                            ),
+                            data: (_) => dayEntries.isEmpty
+                                ? EmptyState(
+                                    message: AppStrings.noSchedule,
+                                    icon: Icons.event_available_outlined,
+                                    actionLabel: AppStrings.addSchedule,
+                                    onAction: () =>
+                                        _showAddScheduleSheet(context, ref),
+                                  )
+                                : TimelineView(entries: dayEntries),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      key: const ValueKey('appointments-tab'),
+                      children: [
+                        AppointmentsDaySummary(
+                          selectedDate: selectedDate,
+                          appointments: dayAppointments,
+                        ),
+                        Expanded(
+                          child: appointmentsAsync.when(
+                            loading: () =>
+                                const Center(child: CircularProgressIndicator()),
+                            error: (e, _) => ErrorView(
+                              message: e.toString(),
+                              onRetry: () =>
+                                  ref.invalidate(appointmentsNotifierProvider),
+                            ),
+                            data: (_) => dayAppointments.isEmpty
+                                ? EmptyState(
+                                    message: AppStrings.noAppointments,
+                                    icon: Icons.event_busy_outlined,
+                                    actionLabel: AppStrings.addAppointment,
+                                    onAction: () =>
+                                        _showAddAppointmentSheet(context, ref),
+                                  )
+                                : AppointmentsListView(
+                                    appointments: dayAppointments,
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
             ),
-            Expanded(
-              child: scheduleAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => ErrorView(
-                  message: e.toString(),
-                  onRetry: () => ref.invalidate(scheduleNotifierProvider),
-                ),
-                data: (_) => dayEntries.isEmpty
-                    ? EmptyState(
-                        message: AppStrings.noSchedule,
-                        icon: Icons.event_available_outlined,
-                        actionLabel: AppStrings.addSchedule,
-                        onAction: () => _showAddScheduleSheet(context, ref),
-                      )
-                    : TimelineView(entries: dayEntries),
-              ),
-            ),
-          ] else ...[
-            AppointmentsDaySummary(
-              selectedDate: selectedDate,
-              appointments: dayAppointments,
-            ),
-            Expanded(
-              child: appointmentsAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => ErrorView(
-                  message: e.toString(),
-                  onRetry: () => ref.invalidate(appointmentsNotifierProvider),
-                ),
-                data: (_) => dayAppointments.isEmpty
-                    ? EmptyState(
-                        message: AppStrings.noAppointments,
-                        icon: Icons.event_busy_outlined,
-                        actionLabel: AppStrings.addAppointment,
-                        onAction: () => _showAddAppointmentSheet(context, ref),
-                      )
-                    : AppointmentsListView(appointments: dayAppointments),
-              ),
-            ),
-          ],
+          ),
         ],
       ),
     );
@@ -242,6 +272,6 @@ class _ScheduleDaySummary extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).staggerIn(0, stepMs: 0);
   }
 }

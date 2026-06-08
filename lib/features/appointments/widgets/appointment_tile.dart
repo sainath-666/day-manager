@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,13 +6,15 @@ import 'package:intl/intl.dart';
 import '../../../core/enums/appointment_status.dart';
 import '../../../core/enums/appointment_type.dart';
 import '../../../core/extensions/date_time_ext.dart';
+import '../../../core/utils/app_animations.dart';
 import '../../../data/models/appointment.dart';
 
 /// Card tile for an appointment in the list view.
 class AppointmentTile extends ConsumerWidget {
-  const AppointmentTile({super.key, required this.appointment});
+  const AppointmentTile({super.key, required this.appointment, this.index = 0});
 
   final Appointment appointment;
+  final int index;
 
   String _durationLabel() {
     final m = appointment.durationMinutes;
@@ -165,7 +166,7 @@ class AppointmentTile extends ConsumerWidget {
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 250.ms).slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic);
+    ).staggerIn(index);
   }
 }
 
