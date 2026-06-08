@@ -1,11 +1,11 @@
 name: dailyflow
 description: Personal task management, reminders, and expense tracking.
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.0 <4.0.0'
-  flutter: '>=3.27.0'
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
@@ -39,6 +39,22 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.11
   mocktail: ^1.0.4
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/app_logo.png
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: assets/images/app_logo.png
+  windows:
+    generate: true
+    image_path: assets/images/app_logo.png
+  macos:
+    generate: true
+    image_path: assets/images/app_logo.png
 
 flutter:
   uses-material-design: true
